@@ -20,54 +20,19 @@ jobs:
          .\gitleaks.exe -o gitleaks-report.json
       continue-on-error: true
 
-    - name: Ping localhost:9000
-      run: |
-        curl http://localhost:9000
-      continue-on-error: true  
-
-    # - name: Install .NET Framework
-    #   run: |
-    #     choco install dotnetfx -y
-    #   continue-on-error: true
-
-    # - name: Set up .NET Framework
-    #   uses: actions/setup-dotnet@v2
-    
-      
-    # - name: Restore dependencies
-    #   run: nuget restore upos-device-simulation.sln  
-
-    # - name: Install Microsoft.PointOfService Package and Copy DLL
-    #   run: |
-    #     dotnet add package Microsoft.PointOfService
-    #     # mkdir -p $GITHUB_WORKSPACE/YourProjectFolder
-    #     # cp "C:\Program Files (x86)\Microsoft Point Of Service\SDK\Microsoft.PointOfService.dll" $GITHUB_WORKSPACE/dotnetproject/
-    #   # working-directory: dotnetproject
-    #   continue-on-error: true
-    
-    # # - name: POS
-    # #   run: dotnet add package Microsoft.PointOfService
-    # #   continue-on-error: true
-
     - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1
+      uses: microsoft/setup-msbuild@v1.1
       continue-on-error: true
 
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.0.5
       continue-on-error: true
-  
-    - name: setup-msbuild
-      uses: microsoft/setup-msbuild@v1.1
-      continue-on-error: true
 
     - name: Download Microsoft Point of Service
       run: |
-         # Download POS for .NET using PowerShell
          # Invoke-WebRequest -Uri "https://github.com/username/repository/releases/download/v1.14.1/POSForDotNet.msi" -OutFile "POSForDotNet.msi"
-         # dotnet add package Microsoft.PointOfService --version 1.14.1
-         # dotnet add src/upos-device-simulation-console/upos-device-simulation-console.csproj package Microsoft.PointOfService --version 1.14.1
-         # dotnet add src/upos-device-simulation/upos-device-simulation.csproj package Microsoft.PointOfService --version 1.14.1
+         dotnet add package Microsoft.PointOfService --version 1.14.1
+         dotnet add src/upos-device-simulation-console/upos-device-simulation-console.csproj package Microsoft.PointOfService --version 1.14.1
          dotnet add src/upos-device-simulation/upos-device-simulation.csproj package Microsoft.PointOfService --version 1.14.1
       continue-on-error: true
 
@@ -80,21 +45,17 @@ jobs:
       run: nuget restore upos-device-simulation.sln
       continue-on-error: true
 
+    - name: Code Lint Check
+      run: npm run lint
+      continue-on-error: true
+  
     - name: Build solution
       run: |
         dotnet clean upos-device-simulation.sln
         msbuild upos-device-simulation.sln -t:rebuild -property:Configuration=Release
       continue-on-error: true
       
-    - name: Code Lint Check
-      run: npm run lint
-      continue-on-error: true
-        
-    - name: Build Project
-      run: msbuild /p:Configuration=Release upos-device-simulation.sln
-      continue-on-error: true
-
-
+ 
     
     
     
