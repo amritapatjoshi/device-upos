@@ -51,6 +51,11 @@ jobs:
       run: nuget restore upos-device-simulation.sln
       continue-on-error: true
 
+    - name: Check SDK Installation Directory
+      run: |
+        ls -R "C:\Program Files (x86)\Microsoft Point Of Service\SDK"  
+      continue-on-error: true  
+
     - name: Code Lint Check
       run: npm run lint
       continue-on-error: true
