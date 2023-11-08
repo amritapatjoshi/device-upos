@@ -1,0 +1,7 @@
+<PointOfServiceConfig Version="1.0">
+  <ServiceObject Name="Microsoft Scanner Simulator" Type="Scanner">
+    <Device HardwarePath="Microsoft Scanner Simulator" Enabled="yes" PnP="no" HardwareId="123456">
+      <LogicalName Name="MyScanner" />
+    </Device>
+  </ServiceObject>
+</PointOfServiceConfig>

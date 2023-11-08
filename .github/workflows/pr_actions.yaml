@@ -1,0 +1,104 @@
+name: PR Action Pipeline
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  pr-action-checks:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    
+    - name: Run GitLeaks Scan
+      run: |
+         Invoke-WebRequest -Uri https://github.com/zricethezav/gitleaks/releases/download/v7.6.0/gitleaks-windows-amd64.exe -OutFile gitleaks.exe
+         .\gitleaks.exe -o gitleaks-report.json
+      continue-on-error: true 
+
+    - name: Install .NET Framework
+      run: |
+        choco install dotnetfx -y
+      continue-on-error: true
+
+    - name: Set up .NET Framework
+      uses: actions/setup-dotnet@v2
+
+    - name: Restore dependencies
+      run: nuget restore upos-device-simulation.sln
+
+    # - name: Code Lint Check
+    #   run: npm run lint
+
+    - name: Build Docker image
+      run: docker build -t upos-background-service .  
+
+    # - name: Run Tests
+    #   run: npm test 
+
+
+
+
+
+
+name: PR Action Pipeline
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  pr-action-checks:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    
+    - name: Run GitLeaks Scan
+      run: |
+         Invoke-WebRequest -Uri https://github.com/zricethezav/gitleaks/releases/download/v7.6.0/gitleaks-windows-amd64.exe -OutFile gitleaks.exe
+         .\gitleaks.exe -o gitleaks-report.json
+      continue-on-error: true
+
+    - name: Install .NET Framework
+      run: |
+        choco install dotnetfx -y
+      continue-on-error: true
+
+    - name: Set up .NET Framework
+      uses: actions/setup-dotnet@v2
+
+    - name: Check .NET Framework version
+      run: |
+          dotnet --version  
+      continue-on-error: true      
+      
+    - name: Restore dependencies
+      run: nuget restore upos-device-simulation.sln 
+    
+    - name: POS
+      run: dotnet add package Microsoft.PointOfService
+     
+
+    - name: Code Lint Check
+      run: npm run lint
+      continue-on-error: true
+        
+    - name: Build Project
+      run: msbuild /p:Configuration=Release upos-device-simulation.sln  
+
+    - name: Build Docker image
+      run: docker build -t upos-background-service .
+      continue-on-error: true
+
+    # - name: Run Tests
+    #   run: npm test 
+    
+    
