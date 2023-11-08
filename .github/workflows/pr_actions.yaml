@@ -28,12 +28,18 @@ jobs:
       uses: NuGet/setup-nuget@v1.0.5
       continue-on-error: true
 
-    - name: Download Microsoft Point of Service
+    # - name: Download Microsoft Point of Service
+    #   run: |
+    #      # Invoke-WebRequest -Uri "https://github.com/username/repository/releases/download/v1.14.1/POSForDotNet.msi" -OutFile "POSForDotNet.msi"
+    #      dotnet add package Microsoft.PointOfService --version 1.14.1
+    #      dotnet add src/upos-device-simulation-console/upos-device-simulation-console.csproj package Microsoft.PointOfService --version 1.14.1
+    #      dotnet add src/upos-device-simulation/upos-device-simulation.csproj package Microsoft.PointOfService --version 1.14.1
+    #   continue-on-error: true
+
+    - name: Download and Install Microsoft Point of Service SDK
       run: |
-         # Invoke-WebRequest -Uri "https://github.com/username/repository/releases/download/v1.14.1/POSForDotNet.msi" -OutFile "POSForDotNet.msi"
-         dotnet add package Microsoft.PointOfService --version 1.14.1
-         dotnet add src/upos-device-simulation-console/upos-device-simulation-console.csproj package Microsoft.PointOfService --version 1.14.1
-         dotnet add src/upos-device-simulation/upos-device-simulation.csproj package Microsoft.PointOfService --version 1.14.1
+         Invoke-WebRequest -Uri "https://github.com/amritapatjoshi/device-upos/releases/tag/pos/PosForDotNet-1.14.1.msi" -OutFile "POSForDotNet.msi"
+         Start-Process -Wait -FilePath "msiexec.exe" -ArgumentList "/i", "POSForDotNet.msi", "/quiet"
       continue-on-error: true
 
     # - name: Install Microsoft Point of Service
