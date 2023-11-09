@@ -25,10 +25,10 @@ jobs:
       continue-on-error: true
 
 
-    - name: Install Chocolatey
-      run: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-          shell: powershell
+    # - name: Install Chocolatey
+    #   run: |
+    #       Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    #       shell: powershell
 
     - name: Install Microsoft POS using Chocolatey
       run: choco install microsoft-pos-sdk -y  
