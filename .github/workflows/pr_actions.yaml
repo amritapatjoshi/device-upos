@@ -39,10 +39,10 @@ jobs:
          Start-Process -Wait -FilePath "msiexec.exe" -ArgumentList "/i", "POSForDotNet.msi", "/quiet"
       continue-on-error: true
 
-    - name: Download and Install Microsoft Point of Service SDK
+    - name: Download and Install Microsoft OPOP SDK
       run: |
-         Invoke-WebRequest -Uri "https://github.com/amritapatjoshi/device-upos/releases/tag/opos/OPOS.Properties.Editor.Ink" -OutFile "OPOS.Properties.Editor.Ink"
-         Start-Process -Wait -FilePath "OPOS.Properties.Editor.Ink" -ArgumentList "/quiet"
+         Invoke-WebRequest -Uri "https://github.com/amritapatjoshi/device-upos/releases/tag/opos/Datalogic_OPOS_1_14_200.msi" -OutFile "Datalogic_OPOS_1_14_200.msi"
+         Start-Process -Wait -FilePath "Datalogic_OPOS_1_14_200.msi" -ArgumentList "/quiet"
       continue-on-error: true
   
     - name: Setup NuGet
