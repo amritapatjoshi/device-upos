@@ -30,16 +30,21 @@ jobs:
     #       Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
     #       shell: powershell
 
-    - name: Install Microsoft POS using Chocolatey
-      run: choco install microsoft-pos-sdk -y  
+    # - name: Install Microsoft POS using Chocolatey
+    #   run: choco install microsoft-pos-sdk -y  
 
-    # - name: Download and Install Microsoft Point of Service SDK
-    #   run: |
-    #      Invoke-WebRequest -Uri "https://github.com/amritapatjoshi/device-upos/releases/tag/pos/PosForDotNet-1.14.1.msi" -OutFile "POSForDotNet.msi"
-    #      Start-Process -Wait -FilePath "msiexec.exe" -ArgumentList "/i", "POSForDotNet.msi", "/quiet"
-    #   continue-on-error: true
+    - name: Download and Install Microsoft Point of Service SDK
+      run: |
+         Invoke-WebRequest -Uri "https://github.com/amritapatjoshi/device-upos/releases/tag/pos/PosForDotNet-1.14.1.msi" -OutFile "POSForDotNet.msi"
+         Start-Process -Wait -FilePath "msiexec.exe" -ArgumentList "/i", "POSForDotNet.msi", "/quiet"
+      continue-on-error: true
 
-
+    - name: Download and Install Microsoft Point of Service SDK
+      run: |
+         Invoke-WebRequest -Uri "https://github.com/amritapatjoshi/device-upos/releases/tag/opos/OPOS.Properties.Editor.Ink" -OutFile "OPOS.Properties.Editor.Ink"
+         Start-Process -Wait -FilePath "OPOS.Properties.Editor.Ink" -ArgumentList "/quiet"
+      continue-on-error: true
+  
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v1.0.5
       continue-on-error: true
