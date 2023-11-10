@@ -18,87 +18,75 @@ jobs:
       run: |
          Invoke-WebRequest -Uri https://github.com/zricethezav/gitleaks/releases/download/v7.6.0/gitleaks-windows-amd64.exe -OutFile gitleaks.exe
          .\gitleaks.exe -o gitleaks-report.json
-      continue-on-error: true 
-
-    - name: Install .NET Framework
-      run: |
-        choco install dotnetfx -y
       continue-on-error: true
 
-    - name: Set up .NET Framework
-      uses: actions/setup-dotnet@v2
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+      continue-on-error: true
 
-    - name: Restore dependencies
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      # with:
+      #   dotnet-version: '4.8.x'
+
+
+    # - name: Install Chocolatey
+    #   run: |
+    #       Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    #       shell: powershell
+
+    # - name: Install Microsoft POS using Chocolatey
+    #   run: choco install microsoft-pos-sdk -y  
+
+    - name: Download and Install Microsoft Point of Service SDK
+      run: |
+         Invoke-WebRequest -Uri "https://github.com/amritapatjoshi/device-upos/releases/tag/pos/PosForDotNet-1.14.1.msi" -OutFile "POSForDotNet.msi"
+         Start-Process -Wait -FilePath "msiexec.exe" -ArgumentList "/i", "POSForDotNet.msi", "/quiet"
+      continue-on-error: true
+
+    - name: Download and Install Microsoft OPOP SDK
+      run: |
+         Invoke-WebRequest -Uri "https://github.com/amritapatjoshi/device-upos/releases/tag/opos/Datalogic_OPOS_1_14_200.msi" -OutFile "Datalogic_OPOS_1_14_200.msi"
+         Start-Process -Wait -FilePath "Datalogic_OPOS_1_14_200.msi" -ArgumentList "/quiet"
+      continue-on-error: true
+  
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.5
+      continue-on-error: true
+
+    # - name: Download Microsoft Point of Service
+    #   run: |
+    #      # Invoke-WebRequest -Uri "https://github.com/username/repository/releases/download/v1.14.1/POSForDotNet.msi" -OutFile "POSForDotNet.msi"
+    #      dotnet add package Microsoft.PointOfService --version 1.14.1
+    #      dotnet add src/upos-device-simulation-console/upos-device-simulation-console.csproj package Microsoft.PointOfService --version 1.14.1
+    #      dotnet add src/upos-device-simulation/upos-device-simulation.csproj package Microsoft.PointOfService --version 1.14.1
+    #   continue-on-error: true
+
+    # - name: Install Microsoft Point of Service
+    #   run: |
+    #     msiexec /i POSForDotNet.msi /quiet
+    #     continue-on-error: true
+
+    - name: Restore Packages
       run: nuget restore upos-device-simulation.sln
-
-    # - name: Code Lint Check
-    #   run: npm run lint
-
-    - name: Build Docker image
-      run: docker build -t upos-background-service .  
-
-    # - name: Run Tests
-    #   run: npm test 
-
-
-
-
-
-
-name: PR Action Pipeline
-
-on:
-  pull_request:
-    branches:
-      - '**'
-
-jobs:
-  pr-action-checks:
-    runs-on: windows-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    
-    - name: Run GitLeaks Scan
-      run: |
-         Invoke-WebRequest -Uri https://github.com/zricethezav/gitleaks/releases/download/v7.6.0/gitleaks-windows-amd64.exe -OutFile gitleaks.exe
-         .\gitleaks.exe -o gitleaks-report.json
       continue-on-error: true
 
-    - name: Install .NET Framework
+    - name: Check SDK Installation Directory
       run: |
-        choco install dotnetfx -y
-      continue-on-error: true
-
-    - name: Set up .NET Framework
-      uses: actions/setup-dotnet@v2
-
-    - name: Check .NET Framework version
-      run: |
-          dotnet --version  
-      continue-on-error: true      
-      
-    - name: Restore dependencies
-      run: nuget restore upos-device-simulation.sln 
-    
-    - name: POS
-      run: dotnet add package Microsoft.PointOfService
-     
+        ls -R "C:\Program Files (x86)\Microsoft Point Of Service\SDK"  
+      continue-on-error: true  
 
     - name: Code Lint Check
       run: npm run lint
       continue-on-error: true
-        
-    - name: Build Project
-      run: msbuild /p:Configuration=Release upos-device-simulation.sln  
-
-    - name: Build Docker image
-      run: docker build -t upos-background-service .
+  
+    - name: Build solution
+      run: |
+        dotnet clean upos-device-simulation.sln
+        msbuild upos-device-simulation.sln -t:rebuild -property:Configuration=Release
       continue-on-error: true
-
-    # - name: Run Tests
-    #   run: npm test 
+      
+ 
+    
     
     
